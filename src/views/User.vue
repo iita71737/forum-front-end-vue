@@ -1,138 +1,26 @@
 <template>
   <div class="container mb-5">
-    <div class="card mb-3">
-      <div data-v-0bcb8864="" class="row no-gutters">
-        <div data-v-0bcb8864="" class="col-md-4">
-          <img
-            data-v-0bcb8864=""
-            src="https://i.imgur.com/58ImzMM.png"
-            class="img-fluid rounded-start"
-          />
-        </div>
-        <div data-v-0bcb8864="" class="col-md-8">
-          <div data-v-0bcb8864="" class="card-body">
-            <h1 data-v-0bcb8864="" class="card-title h5">root</h1>
-            <p data-v-0bcb8864="" class="card-text">root@example.com</p>
-            <ul data-v-0bcb8864="" class="list-unstyled list-inline">
-              <li data-v-0bcb8864="">
-                <strong data-v-0bcb8864="">49</strong> 已評論餐廳
-              </li>
-              <li data-v-0bcb8864="">
-                <strong data-v-0bcb8864="">4</strong> 收藏的餐廳
-              </li>
-              <li data-v-0bcb8864="">
-                <strong data-v-0bcb8864="">2</strong> followings (追蹤者)
-              </li>
-              <li data-v-0bcb8864="">
-                <strong data-v-0bcb8864="">1</strong> followers (追隨者)
-              </li>
-            </ul>
-            <p data-v-0bcb8864="">
-              <a data-v-0bcb8864="" href="/users/1/edit"
-                ><button
-                  data-v-0bcb8864=""
-                  type="submit"
-                  class="btn btn-primary"
-                >
-                  edit
-                </button></a
-              >
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
+    <UserProfileCard :user-profile="userprofile"/>
     <div class="row">
-      <div class="col-md-4">
-        <div data-v-4b2f949f="" class="card">
-          <div data-v-4b2f949f="" class="card-header">
-            <strong data-v-4b2f949f="">2</strong> followings (追蹤者)
-          </div>
-          <div data-v-4b2f949f="" class="card-body">
-            <a data-v-4b2f949f="" href="#/users/2" class="me-1"
-              ><img
-                data-v-4b2f949f=""
-                src="https://i.imgur.com/Q14p2le.jpg"
-                class="avatar"/></a
-            ><a data-v-4b2f949f="" href="#/users/3" class="me-1"
-              ><img
-                data-v-4b2f949f=""
-                src="https://i.imgur.com/OezkRwO.jpg"
-                class="avatar"
-            /></a>
-          </div>
+        <div class="col-md-4">
+            <UserFollowingsCard :user-followings="userprofile.profile.Followings"/>
+            <user-followers-card :user-followers="userprofile.profile.Followers"/>
         </div>
-        <br />
-        <div data-v-1fa26cf2="" class="card">
-          <div data-v-1fa26cf2="" class="card-header">
-            <strong data-v-1fa26cf2="">1</strong> followers (追隨者)
-          </div>
-          <div data-v-1fa26cf2="" class="card-body">
-            <a data-v-1fa26cf2="" href="#/users/2" class="me-1"
-              ><img
-                data-v-1fa26cf2=""
-                src="https://i.imgur.com/Q14p2le.jpg"
-                class="avatar"
-            /></a>
-          </div>
-        </div>
-      </div>
       <div class="col-md-8">
-        <div data-v-2fca745f="" class="card">
-          <div data-v-2fca745f="" class="card-header">
-            <strong data-v-2fca745f="">49</strong> 已評論餐廳
-          </div>
-          <div data-v-2fca745f="" class="card-body">
-            <a
-              data-v-2fca745f=""
-              href="#/restaurants/7"
-              class="me-1 mb-1 d-inline-block"
-              ><img
-                data-v-2fca745f=""
-                src="https://loremflickr.com/320/240/restaurant,food/?random=43.25768589113377"
-                class="avatar"/></a
-            ><a
-              data-v-2fca745f=""
-              href="#/restaurants/11"
-              class="me-1 mb-1 d-inline-block"
-              ><img
-                data-v-2fca745f=""
-                src="https://loremflickr.com/320/240/restaurant,food/?random=45.89406888977074"
-                class="avatar"/></a
-            >
-          </div>
-        </div>
-        <br />
-        <div data-v-17cdee81="" class="card">
-          <div data-v-17cdee81="" class="card-header">
-            <strong data-v-17cdee81="">4</strong> 收藏的餐廳
-          </div>
-          <div data-v-17cdee81="" class="card-body">
-            <a
-              data-v-17cdee81=""
-              href="#/restaurants/1"
-              class="me-1 mb-1 d-inline-block"
-              ><img
-                data-v-17cdee81=""
-                src="https://loremflickr.com/320/240/restaurant,food/?random=91.29816290184887"
-                class="avatar"/></a
-            ><a
-              data-v-17cdee81=""
-              href="#/restaurants/30"
-              class="me-1 mb-1 d-inline-block"
-              ><img
-                data-v-17cdee81=""
-                src="https://loremflickr.com/320/240/restaurant,food/?random=25.932072460400413"
-                class="avatar"/></a
-            >
-          </div>
-        </div>
+        <user-comments-card :user-comments="userprofile.profile.Comments"/>
+        <user-favorited-restaurants-card :user-favoritedrestaurants="userprofile.profile.FavoritedRestaurants"/>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import UserProfileCard from './../components/UserProfileCard.vue'
+import UserFollowingsCard from './../components/UserFollowingsCard.vue'
+import UserFollowersCard from './../components/UserFollowersCard.vue'
+import UserFavoritedRestaurantsCard from './../components/UserFavoritedRestaurantsCard.vue'
+import UserCommentsCard from './../components/UserCommentsCard.vue'
+
 const dummyData = {
   'profile': {
     'id': 1,
@@ -1310,10 +1198,27 @@ const dummyData = {
 
 export default {
     name:'User',
+    components: {
+    UserProfileCard,
+    UserFollowingsCard,
+    UserFollowersCard,
+    UserFavoritedRestaurantsCard,
+    UserCommentsCard
+    },
     data () {
         return {
-            profile : dummyData.profile
+            userprofile:[]
         }
+    },
+    methods: {
+        fetchUser () {
+          this.userprofile = {
+              ...dummyData,
+          }
+        }
+    },
+    created () {
+    this.fetchUser()
     }
-}
+}  
 </script>
