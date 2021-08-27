@@ -28,12 +28,13 @@
               </li>
             </ul>
             <template v-if="isAuthenticated">
-                <button
-                  type="submit"
+                <router-link
+                  :to="{ name:'user-edit', params:{ id: currentUser.id }}"
                   class="btn btn-primary"
+                  :current-user="currentUser"
                 >
                   edit
-                </button>
+                </router-link>
             </template>
           <template v-else>
               <button
