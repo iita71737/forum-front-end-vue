@@ -7,7 +7,7 @@
       <router-link
         v-for="following in userFollowings"
         :key="following.id"
-        :to="{ name: 'user', params: { id: following.id } }"
+        :to="{ name: 'users', params: { id: following.id } }"
       >
         <img
           :src="following.image"

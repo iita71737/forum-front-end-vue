@@ -1,11 +1,11 @@
 <template>
-            <div  class="card">
+            <div  class="card" v-if='$store.state.currentUser' >
           <div  class="card-header">
-            <strong >{{userFavoritedrestaurants.length}}</strong> 收藏的餐廳
+            <strong >{{favoritedRestaurants.length}}</strong> 收藏的餐廳
           </div>
           <div  class="card-body">
             <router-link
-                v-for="favoritedRestaurant in userFavoritedrestaurants"
+                v-for="favoritedRestaurant in favoritedRestaurants"
                 :key="favoritedRestaurant.id"
                 :to="{ name: 'restaurant', params: { id: favoritedRestaurant.id } }"
             >
@@ -22,7 +22,7 @@
 <script>
 export default {
   props:{
-    userFavoritedrestaurants:{
+    favoritedRestaurants:{
       type: Array,
       required: true
     }

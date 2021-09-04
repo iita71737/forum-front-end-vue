@@ -54,45 +54,14 @@
 </template>
 
 <script>
-// ./src/components/Navbar.vue
-// seed data
-const dummyUser = {
-  currentUser: {
-    id: 1,
-    name: 'root',
-    email: 'root@example.com',
-    image: 'https://i.pravatar.cc/300',
-    isAdmin: true
-  },
-  isAuthenticated: true
-}
+import { mapState } from 'vuex'
+
 
 export default {
-  // Vue 會在沒有資料時使用此預設值
-  data () {
-    return {
-      currentUser: {
-        id: -1,
-        name: '',
-        email: '',
-        image: '',
-        isAdmin: false
-      },
-      isAuthenticated: false
-    }
+  // Step4：新增 `mapState` 方法
+    computed: {
+    ...mapState(['currentUser', 'isAuthenticated'])
   },
-  created () {
-    this.fetchUser()
-  },
-  methods: {
-    fetchUser () {
-      this.currentUser = {
-        ...this.currentUser,
-        ...dummyUser.currentUser
-      }
-      this.isAuthenticated = dummyUser.isAuthenticated
-    }
-  }
 }
 </script>
 
