@@ -1,14 +1,14 @@
 <template>
   <div class="container py-5">
-    <div v-if="isLoading">
-      <h1>{{ restaurant.name }}</h1>
-      <span class="badge badge-secondary mt-1 mb-3">
-        {{ restaurant.Category.name }}
-      </span>
-    </div>
+    <Spinner v-if="isLoading" />
 
+    <template v-else>
+      <div>
+        <h1>{{ restaurant.name }}</h1>
+        <p>[{{ restaurant.categoryName }}]</p>
+      </div>
+    </template>
     <hr />
-
     <ul>
       <li>評論數： {{ restaurant.Comments.length }}</li>
       <li>瀏覽次數： {{ restaurant.viewCounts }}</li>
@@ -23,9 +23,12 @@
 <script>
 import restaurantsAPI from "./../apis/restaurants";
 import { Toast } from "./../utils/helpers";
+import Spinner from "./../components/Spinner";
 
 export default {
   name: "RestaurantDashboard",
+  components: { Spinner },
+
   data() {
     return {
       restaurant: [],

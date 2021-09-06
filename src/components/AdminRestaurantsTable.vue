@@ -1,5 +1,7 @@
 <template>
   <table class="table">
+    <Spinner v-if="isLoading" />
+
     <thead class="thead-dark">
       <tr>
         <th scope="col">#</th>
@@ -49,11 +51,14 @@
 // STEP 1: 匯入 adminAPI 和 Toast
 import adminAPI from "./../apis/admin";
 import { Toast } from "./../utils/helpers";
+import Spinner from "./../components/Spinner";
 
 export default {
+  components: { Spinner },
   data() {
     return {
       restaurants: [],
+      isLoading: true,
     };
   },
   created() {
@@ -64,7 +69,9 @@ export default {
       try {
         const { data } = await adminAPI.restaurants.get();
         this.restaurants = data.restaurants;
+        this.isLoading = false;
       } catch (error) {
+        this.isLoading = false;
         // STEP 4: 在 catch 中進行錯誤處理
         Toast.fire({
           icon: "error",
@@ -75,7 +82,6 @@ export default {
     async deleteRestaurant(restaurantId) {
       try {
         const { data } = await adminAPI.restaurants.delete(restaurantId);
-
 
         if (data.status !== "success") {
           throw new Error(data.message);

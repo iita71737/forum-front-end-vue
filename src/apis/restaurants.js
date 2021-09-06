@@ -1,38 +1,24 @@
 import { apiHelper } from "./../utils/helpers";
-const getToken = () => localStorage.getItem("token");
+
 
 export default {
   getRestaurants({ page, categoryId }) {
     const searchParams = new URLSearchParams({ page, categoryId });
-    return apiHelper.get(`/restaurants?${searchParams.toString()}`, {
-      headers: { Authorization: `Bearer ${getToken()}` },
-    });
+    return apiHelper.get(`/restaurants?${searchParams.toString()}`);
   },
   getFeeds() {
-    return apiHelper.get(`/restaurants/feeds`, {
-      headers: { Authorization: `Bearer ${getToken()}` },
-    });
+    return apiHelper.get(`/restaurants/feeds`);
   },
   getTop() {
-    return apiHelper.get(`/restaurants/top`, {
-      headers: { Authorization: `Bearer ${getToken()}` },
-    });
+    return apiHelper.get(`/restaurants/top`);
   },
   getRestaurant({ restaurantId }) {
-    return apiHelper.get(`/restaurants/${restaurantId}`, {
-      headers: { Authorization: `Bearer ${getToken()}` },
-    });
+    return apiHelper.get(`/restaurants/${restaurantId}`);
   },
   addComment({ restaurantId, text }) {
-    return apiHelper.post(
-      `/comments/`,
-      { restaurantId, text },
-      { headers: { Authorization: `Bearer ${getToken()}` } }
-    );
+    return apiHelper.post(`/comments/`, { restaurantId, text });
   },
   removeComment({ commentId }) {
-    return apiHelper.delete(`/comments/${commentId}`, {
-      headers: { Authorization: `Bearer ${getToken()}` },
-    });
+    return apiHelper.delete(`/comments/${commentId}`);
   },
 };

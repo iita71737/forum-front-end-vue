@@ -1,6 +1,8 @@
 <template>
   <div class="container py-5">
     <NavTabs />
+    <Spinner v-if="isLoading" />
+
     <h1 class="mt-5">人氣餐廳</h1>
 
     <hr />
@@ -27,7 +29,12 @@
             <p class="card-text">
               {{ restaurant.description }}
             </p>
-            <a href="#" class="btn btn-primary mr-2">Show</a>
+            <router-link
+              class="btn btn-primary mr-2"
+              :to="{ name: 'restaurant', params: { id: restaurant.id } }"
+            >
+              Show
+            </router-link>
 
             <button
               v-if="restaurant.isFavorited"
@@ -57,23 +64,29 @@ import NavTabs from "./../components/NavTabs";
 import restaurantsAPI from "./../apis/restaurants";
 import { Toast } from "./../utils/helpers";
 import usersAPI from "./../apis/users";
+import Spinner from "./../components/Spinner";
 
 export default {
   name: "RestaurantTop",
   components: {
     NavTabs,
+    Spinner,
   },
   data() {
     return {
-      restaurants:'',
+      restaurants: "",
+      isLoading: true,
     };
   },
   methods: {
     async fetchFeeds() {
       try {
         const response = await restaurantsAPI.getTop();
-        this.restaurants = response.data.restaurants
+        this.restaurants = response.data.restaurants;
+        this.isLoading = false;
       } catch (error) {
+        this.isLoading = false;
+
         console.log("error", error);
         Toast.fire({
           icon: "error",
@@ -81,7 +94,7 @@ export default {
         });
       }
     },
-    async addFavorite(restaurantId) {  
+    async addFavorite(restaurantId) {
       try {
         // STEP 3: 使用撰寫好的 addFavorite 方法去呼叫 API，並取得回傳內容
         const { data } = await usersAPI.addFavorite({ restaurantId });
@@ -91,13 +104,13 @@ export default {
         }
         // STEP 5: 請求成功的話，改變 Vue 內的資料狀態
         this.restaurants = this.restaurants.filter((item) => {
-           if(restaurantId === item.id){
-             item.isFavorited = true
-           }
-           return item
-        })
+          if (restaurantId === item.id) {
+            item.isFavorited = true;
+          }
+          return item;
+        });
       } catch (error) {
-        console.log(error)
+        console.log(error);
         // STEP 6: 請求失敗的話則跳出錯誤提示
         Toast.fire({
           icon: "error",
@@ -114,12 +127,11 @@ export default {
           throw new Error(data.message);
         }
         this.restaurants = this.restaurants.filter((item) => {
-           if(restaurantId === item.id){
-             item.isFavorited = false
-           }
-           return item
-        })
-
+          if (restaurantId === item.id) {
+            item.isFavorited = false;
+          }
+          return item;
+        });
       } catch (error) {
         Toast.fire({
           icon: "error",

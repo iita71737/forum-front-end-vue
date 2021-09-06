@@ -103,14 +103,13 @@ export default {
           });
           return;
         }
+        this.isProcessing = true;
 
         const form = e.target; // <form></form>
         const formData = new FormData(form);
         //test formData
-        for (let [key, value] of formData.entries()) {
-          console.log(key + ", " + value);
-        }
-        this.isProcessing = true;
+        formData.forEach((v) => console.log(v));
+
         const { data } = await usersAPI.updateUser({
           userId: this.id,
           formData,
