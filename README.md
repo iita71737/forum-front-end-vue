@@ -1,3 +1,6 @@
+![image info](https://github.com/iita71737/forum-front-end-vue/blob/dev-backend/public/pic1.PNG?raw=true)
+
+
 ## client side setup
 ```
 git checkout dev-backend
