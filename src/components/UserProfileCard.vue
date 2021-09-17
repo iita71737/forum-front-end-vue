@@ -3,7 +3,7 @@
       <div  class="row no-gutters">
         <div  class="col-md-4">
           <img
-            :src="userProfile.profile.image | emptyImage"
+            :src="userProfile.image | emptyImage"
             class="img-fluid rounded-start"
             width="300px"
             height="300px"
@@ -11,27 +11,26 @@
         </div>
         <div  class="col-md-8">
           <div  class="card-body">
-            <h1  class="card-title h5">{{userProfile.profile.name}}11</h1>
-            <p  class="card-text">{{userProfile.profile.email}}</p>
+            <h1  class="card-title h5">{{userProfile.name}}</h1>
+            <p  class="card-text">{{userProfile.email}}</p>
             <ul  class="list-unstyled list-inline">
               <li >
-                <strong >{{userProfile.profile.Comments.length}}</strong> 已評論餐廳
+                <strong >{{userProfile.Comments.length}}</strong> 已評論餐廳
               </li>
               <li >
-                <strong >{{userProfile.profile.FavoritedRestaurants.length}}</strong> 收藏的餐廳
+                <strong >{{userProfile.FavoritedRestaurants.length}}</strong> 收藏的餐廳
               </li>
               <li >
-                <strong >{{userProfile.profile.Followings.length}}</strong> followings (追蹤者)
+                <strong >{{userProfile.Followings.length}}</strong> followings (追蹤者)
               </li>
               <li >
-                <strong >{{userProfile.profile.Followers.length}}</strong> followers (追隨者)
+                <strong >{{userProfile.Followers.length}}</strong> followers (追隨者)
               </li>
             </ul>
-            <template v-if="isAuthenticated">
+            <template v-if="isCurrentuser">
                 <router-link
-                  :to="{ name:'user-edit', params:{ id: currentUser.id }}"
+                  :to="{ name:'user-edit', params:{ id: userProfile.id }}"
                   class="btn btn-primary"
-                  :current-user="currentUser"
                 >
                   edit
                 </router-link>
@@ -41,7 +40,7 @@
                 v-if="isFollowed"
                 type="button" 
                 class="btn btn-sm btn-outline-success my-2 my-sm-0"
-                @click.stop.prevent="deleteFollowing(userProfile.profile.id)"
+                @click.stop.prevent="deleteFollowing(userProfile.id)"
                 >
                 取消追蹤
               </button>
@@ -49,7 +48,7 @@
                 v-else
                 type="button" 
                 class="btn btn-sm btn-outline-success my-2 my-sm-0"
-                @click.stop.prevent="addFollowing(userProfile.profile.id)"
+                @click.stop.prevent="addFollowing(userProfile.id)"
                 >
                 追蹤
               </button>
@@ -61,54 +60,71 @@
 </template>
 
 <script>
-const dummyUser = {
-  currentUser: {
-    id: 1,
-    name: 'root',
-    email: 'root@example.com',
-    image: 'https://i.pravatar.cc/300',
-    isAdmin: true
-  },
-  isAuthenticated: true
-}
+import { emptyImageFilter } from "./../utils/mixins";
+import usersAPI from "./../apis/users";
+import { Toast } from "./../utils/helpers";
 
 export default {
+  name:'UserProfileCard',
+  mixins: [emptyImageFilter],
   props : {
     userProfile : {
       type: Object,
       required: true
-    }
+    },
+    isCurrentuser: {
+      type: Boolean,
+      required: true
+    },
+    initialIsfollowed: {
+      type: Boolean,
+      required: true
+    },
   },
   data () {
     return {
-      currentUser: {
-        id: -1,
-        name: '',
-        email: '',
-        image: '',
-        isAdmin: false
-      },
-      isAuthenticated: false,
-      isFollowed: this.userProfile.isFollowed
+      isFollowed: this.initialIsfollowed,
     }
   },
-  created () {
-    this.fetchUser()
+  watch: {
+    initialIsfollowed (isFollowed) {
+      this.isFollowed = isFollowed
+    },
   },
   methods: {
-    fetchUser () {
-      this.currentUser = {
-        ...this.currentUser,
-        ...dummyUser.currentUser
+    async addFollowing(userId) {
+      try {
+        const { data } = await usersAPI.addFollowing({ userId });
+
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        this.isFollowed = true
+      } catch (error) {
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "無法加入追蹤，請稍後再試123",
+        });
       }
-      this.isAuthenticated = dummyUser.isAuthenticated
     },
-    addFollowing () {
-      this.isFollowed = true
+    async deleteFollowing(userId) {
+      try {
+        const { data } = await usersAPI.deleteFollowing({ userId });
+
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        this.isFollowed = false
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法取消追蹤，請稍後再試456",
+        });
+      }
     },
-    deleteFollowing () {
-      this.isFollowed = false
-    }
   }
 }
 </script>

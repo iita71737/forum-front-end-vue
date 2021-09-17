@@ -1,24 +1,41 @@
-# forum-front-end-vue
-
-## Project setup
+## client side setup
+```
+git checkout dev-backend
+```
 ```
 npm install
 ```
-
-### Compiles and hot-reloads for development
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
+### Server side setup
+
 ```
-npm run build
+git clone https://github.com/ALPHACamp/forum-express.git 
+```
+```
+cd forum-express
+```
+```
+npm install
+```
+```
+npm run dev
 ```
 
-### Lints and fixes files
-```
-npm run lint
-```
+then, the server side is running on localhost:3000
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### deploy setting
+```
+set deploy.sh file on root
+```
+```
+set     publicPath: process.env.NODE_ENV === 'production'
+        ? '/danlin-resume/'
+        : '/',
+in vue.config.js
+```
+```
+run ./deploy.sh 
+```

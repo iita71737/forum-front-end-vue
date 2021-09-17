@@ -1,6 +1,8 @@
 <template>
   <div class="container py-5">
     <NavTabs />
+    <Spinner v-if="isLoading" />
+
     <h1 class="mt-5">美食達人</h1>
     <hr />
     <users-top-card
@@ -16,16 +18,19 @@ import NavTabs from "./../components/NavTabs";
 import UsersTopCard from "./../components/UsersTopCard.vue";
 import usersAPI from "./../apis/users";
 import { Toast } from "./../utils/helpers";
+import Spinner from "./../components/Spinner";
 
 export default {
   name: "UsersTop",
   components: {
     NavTabs,
     UsersTopCard,
+    Spinner,
   },
   data() {
     return {
       users: [],
+      isLoading: true,
     };
   },
   methods: {
@@ -40,7 +45,10 @@ export default {
           followerCount: user.FollowerCount,
           isFollowed: user.isFollowed,
         }));
+        this.isLoading = false;
       } catch (error) {
+        this.isLoading = false;
+
         console.log(error);
         Toast.fire({
           icon: "error",

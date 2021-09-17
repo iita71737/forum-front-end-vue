@@ -25,6 +25,8 @@
       </div>
     </form>
     <table class="table">
+      <Spinner v-if="isLoading" />
+
       <thead class="thead-dark">
         <tr>
           <th scope="col" width="60">#</th>
@@ -94,6 +96,7 @@ import AdminNav from "@/components/AdminNav";
 import { v4 as uuidv4 } from "uuid";
 import adminAPI from "./../apis/admin";
 import { Toast } from "./../utils/helpers";
+import Spinner from "./../components/Spinner";
 
 //  2. 定義暫時使用的資料
 
@@ -101,12 +104,15 @@ export default {
   name: "UserEdit",
   components: {
     AdminNav,
+    Spinner,
   },
   // 3. 定義 Vue 中使用的 data 資料
   data() {
     return {
       newCategoryName: "",
       categories: [],
+      isProcessing: false,
+      isLoading: true,
     };
   },
   // 5. 調用 `fetchCategories` 方法
@@ -123,7 +129,10 @@ export default {
           ...category,
           isEditing: false,
         }));
+        this.isLoading = false;
       } catch (error) {
+        this.isLoading = false;
+
         Toast.fire({
           icon: "error",
           title: "無法取得餐廳類別，請稍後再試",

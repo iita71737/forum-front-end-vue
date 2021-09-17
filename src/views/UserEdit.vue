@@ -4,7 +4,7 @@
       <div class="form-group">
         <label for="name">Name</label>
         <input
-          v-model="currentUser.name"
+          v-model="name"
           id="name"
           type="text"
           name="name"
@@ -17,8 +17,8 @@
       <div class="form-group">
         <label for="image">Image</label>
         <img
-          v-if="currentUser.image"
-          :src="currentUser.image"
+          v-if="image"
+          :src="image"
           class="d-block img-thumbnail mb-3"
           width="200"
           height="200"
@@ -33,63 +33,102 @@
         />
       </div>
 
-      <button type="submit" class="btn btn-primary">
-        Submit
+      <button type="submit" class="btn btn-primary" :disabled="isProcessing">
+        {{ isProcessing ? "資料更新中..." : "Submit" }}
       </button>
     </form>
   </div>
 </template>
 
 <script>
-const dummyUser = {
-  currentUser: {
-    id: 1,
-    name: "root",
-    email: "root@example.com",
-    image: "https://i.pravatar.cc/300",
-    isAdmin: true,
-  },
-  isAuthenticated: true,
-};
+import { mapState } from "vuex";
+import usersAPI from "./../apis/users";
+import { Toast } from "./../utils/helpers";
 
 export default {
   name: "UserEdit",
   data() {
     return {
-      currentUser: {
-        id: 0,
-        name: "",
-        email: "",
-        image: "",
-        isAdmin: 0,
-      },
+      id: 0,
+      email: "",
+      image: "",
+      name: "",
+      isProcessing: false,
     };
   },
+  computed: {
+    ...mapState(["currentUser"]),
+  },
+  watch: {
+    currentUser(user) {
+      if (user.id === -1) return;
+      const { id } = this.$route.params;
+      this.fetchUser(id);
+    },
+  },
+  created() {
+    if (this.currentUser.id === -1) return;
+    const { id } = this.$route.params;
+    this.fetchUser(id);
+  },
   methods: {
-    fetchUserid(id) {
-      (this.currentUser = { ...dummyUser.currentUser }),
-        (this.currentUser.id = id);
+    fetchUser(userId) {
+      const { name, email, id, image } = this.currentUser;
+      if (id.toString() !== userId.toString()) {
+        this.$router.push({ name: "not-found" });
+        return;
+      }
+      (this.id = id),
+        (this.name = name),
+        (this.email = email),
+        (this.image = image);
     },
     handleFileChange(e) {
       const { files } = e.target;
       if (files.length === 0) {
         // 使用者沒有選擇上傳的檔案
-        this.restaurant.image = "";
+        this.image = "";
       } else {
         // 否則產生預覽圖
         const imageURL = window.URL.createObjectURL(files[0]);
-        this.restaurant.image = imageURL;
+        this.image = imageURL;
       }
     },
-    handleSubmit (e) {
-      const form = e.target  // <form></form>
-      const formData = new FormData(form)
-      this.$emit('after-submit', formData)
-    }
-  },
-  created() {
-    const { id } = this.$route.params;
-    this.fetchUserid(id);
+    async handleSubmit(e) {
+      try {
+        if (!this.name) {
+          Toast.fire({
+            icon: "warning",
+            title: "您尚未填寫姓名",
+          });
+          return;
+        }
+        this.isProcessing = true;
+
+        const form = e.target; // <form></form>
+        const formData = new FormData(form);
+        //test formData
+        formData.forEach((v) => console.log(v));
+
+        const { data } = await usersAPI.updateUser({
+          userId: this.id,
+          formData,
+        });
+
+        if (data.status === "error") {
+          throw new Error(data.message);
+        }
+
+        this.$router.push({ name: "users", params: { id: this.id } });
+      } catch (error) {
+        this.isProcessing = false;
+        console.error(error.message);
+        Toast.fire({
+          icon: "error",
+          title: "無法update，請稍後再試",
+        });
+      }
+    },
   },
 };
 </script>
